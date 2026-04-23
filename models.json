@@ -7,7 +7,7 @@
     "cameraPos": {"x": 60, "y": 20, "z": 0},
     "target": {"x": 17, "y": 22, "z": 2},
     "orbitRadius": 60,
-    "orbitHeight": 20
+    "orbitHeight": 0
   },
   {
     "id": "saint-maire",
