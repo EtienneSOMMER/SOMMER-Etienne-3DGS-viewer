@@ -92,7 +92,17 @@ function chargerModele(id, modelList) {
 
     // CHARGEMENT DU NOUVEAU SPLAT
     splatActuel = new SplatMesh({ url: config.url });
-    splatActuel.rotation.x = -Math.PI;
+
+    // APPLICATION DE LA ROTATION DYNAMIQUE
+    if (config.rotation) {
+        splatActuel.rotation.x = config.rotation.x || 0;
+        splatActuel.rotation.y = config.rotation.y || 0;
+        splatActuel.rotation.z = config.rotation.z || 0;
+    } else {
+        // Rotation par défaut si rien n'est précisé
+        splatActuel.rotation.x = -Math.PI;
+    }
+
     scene.add(splatActuel);
 
     setTimeout(() => {
