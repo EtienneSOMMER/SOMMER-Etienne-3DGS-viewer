@@ -33,10 +33,10 @@
     "id": "bas-relief",
     "title": "Religious Bas-Relief - Bangkok",
     "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Bas-Relief_5M_50k_clean.splat",
-    "rotation": { "x": 0, "y": 0, "z": 0 },
-    "cameraPos": {"x": 0, "y": 0, "z": 0},
-    "target": {"x": 0, "y": 0, "z": 0},
-    "orbitRadius": 50,
-    "orbitHeight": 15
+    "rotation": { "x": -1.57, "y": 0, "z": 0 },
+    "cameraPos": {"x": 0, "y": 20, "z": 0},
+    "target": {"x": 0, "y": 5, "z": 0},
+    "orbitRadius": 20,
+    "orbitHeight": 0
   }
 ]
