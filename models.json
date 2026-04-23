@@ -4,10 +4,10 @@
     "title": "Birkenfels",
     "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Birkenfels_1M_50k_clean.splat",
     "rotation": { "x": -1.57, "y": 0, "z": 0 },
-    "cameraPos": {"x": 60, "y": 20, "z": 0},
+    "cameraPos": {"x": 0, "y": 0, "z": 0},
     "target": {"x": 17, "y": 22, "z": 2},
     "orbitRadius": 60,
-    "orbitHeight": 0
+    "orbitHeight": 20
   },
   {
     "id": "saint-maire",
