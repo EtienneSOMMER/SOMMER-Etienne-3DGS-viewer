@@ -1,0 +1,20 @@
+[
+  {
+    "id": "birkenfels",
+    "title": "Château de Birkenfels",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Birkenfels_1M_50k_clean.splat",
+    "cameraPos": {"x": 60, "y": 20, "z": 0},
+    "target": {"x": 17, "y": 22, "z": 2},
+    "orbitRadius": 60,
+    "orbitHeight": 20
+  },
+  {
+    "id": "saint-maire",
+    "title": "Château Saint-Maire",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Chateau_Saint_Maire_R2_74k_3M_clean.splat",
+    "cameraPos": {"x": 50, "y": 15, "z": 0},
+    "target": {"x": 0, "y": 0, "z": 0},
+    "orbitRadius": 50,
+    "orbitHeight": 15
+  }
+]

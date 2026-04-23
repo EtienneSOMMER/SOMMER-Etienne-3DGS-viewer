@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Mes Splats 3D</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; }
+
+        #ui {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 15px; 
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 5px;
+            background: rgba(0,0,0,0.6);
+            padding: 5px;
+            border-radius: 10px;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            color: #aaa;
+            font-family: monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn.active {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        /* Style spécifique pour le menu déroulant */
+        select.btn {
+            appearance: none;
+            outline: none;
+            padding-right: 30px;
+        }
+        select.btn option {
+            background: #222;
+            color: #fff;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            background: rgba(0,0,0,0.6);
+            padding: 8px 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            gap: 6px;
+            transition: opacity 0.3s;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .slider-header label {
+            color: #aaa;
+            font-family: monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        #speed-value {
+            color: #4aaeff;
+            font-family: monospace;
+            font-size: 13px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        input[type=range] {
+            width: 120px;
+            cursor: pointer;
+            accent-color: #4aaeff;
+            margin: 0;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            transition: opacity 0.5s;
+        }
+
+        #loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #loading-text {
+            color: #fff;
+            font-family: monospace;
+            font-size: 16px;
+            letter-spacing: 0.1em;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.179.0/build/three.module.js",
+            "three/examples/jsm/": "https://unpkg.com/three@0.179.0/examples/jsm/",
+            "@sparkjsdev/spark": "https://unpkg.com/@sparkjsdev/spark@latest/dist/spark.module.js"
+        }
+    }
+    </script>
+</head>
+<body>
+
+    <div id="ui">
+        <div class="btn-group">
+            <select id="model-selector" class="btn" title="Choisir un modèle">
+                <option>Chargement...</option>
+            </select>
+        </div>
+
+        <div class="btn-group">
+            <button id="btn-orbit" class="btn active">Orbite</button>
+            <button id="btn-free" class="btn">Libre</button>
+        </div>
+        
+        <div class="slider-container" id="speed-container">
+            <div class="slider-header">
+                <label for="speed-slider">Vitesse</label>
+                <span id="speed-value">0.10</span> 
+            </div>
+            <input type="range" id="speed-slider" min="-1" max="1" step="0.01" value="0.1">
+        </div>
+    </div>
+
+    <div id="loading-overlay">
+        <span id="loading-text">Chargement du Splat 3D...</span>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
