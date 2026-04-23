@@ -10,6 +10,16 @@
     "orbitHeight": 20
   },
   {
+    "id": "birkenfels_restit",
+    "title": "Restitution Birkenfels",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Restit_Birkenfels.splat",
+    "rotation": { "x": -1.57, "y": 0, "z": 0 },
+    "cameraPos": {"x": 60, "y": 20, "z": 0},
+    "target": {"x": 0, "y": 0, "z": 0},
+    "orbitRadius": 60,
+    "orbitHeight": 20
+  },
+  {
     "id": "saint-maire",
     "title": "Château Saint-Maire",
     "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Chateau_Saint_Maire_R2_74k_3M_clean.splat",
