@@ -30,6 +30,16 @@
     "orbitHeight": 15
   },
   {
+    "id": "ancienne-academie",
+    "title": "Ancienne académie",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Ancienne_Academie_R1_3M_80k_clean.splat",
+    "rotation": { "x": -1.57, "y": 0, "z": 0 },
+    "cameraPos": {"x": 0, "y": 0, "z": 0},
+    "target": {"x": 4, "y": 10, "z": 16},
+    "orbitRadius": 50,
+    "orbitHeight": 30
+  },
+  {
     "id": "bas-relief",
     "title": "Religious Bas-Relief - Bangkok",
     "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Bas-Relief_5M_50k_clean.splat",
