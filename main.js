@@ -207,33 +207,38 @@ function gererDeplacementVR(delta) {
     for (const source of session.inputSources) {
         if (!source || !source.gamepad) continue;
 
+        // axes[2] = axe horizontal (X), axes[3] = axe vertical (Y) du joystick
         const axeX = source.gamepad.axes[2];
         const axeY = source.gamepad.axes[3];
 
-        // MANETTE GAUCHE : Déplacement (Avancer, Reculer, Strafe)
+        // MANETTE GAUCHE : Déplacement horizontal (Plan XZ)
         if (source.handedness === 'left') {
             if (Math.abs(axeX) > deadzone || Math.abs(axeY) > deadzone) {
                 
-                // Récupérer la direction du regard
                 const cameraDir = new THREE.Vector3();
                 camera.getWorldDirection(cameraDir);
-                cameraDir.y = 0; // On bloque l'axe Y pour ne pas s'envoler ou s'enterrer
+                cameraDir.y = 0; // On maintient le vecteur directeur à l'horizontale
                 cameraDir.normalize();
 
-                // Calculer le vecteur "Droite" pour les pas chassés
                 const cameraRight = new THREE.Vector3();
                 cameraRight.crossVectors(cameraDir, new THREE.Vector3(0, 1, 0)).normalize();
 
-                // Déplacer le Dolly
                 dolly.position.addScaledVector(cameraRight, axeX * vitesseDeplacement * delta);
                 dolly.position.addScaledVector(cameraDir, -axeY * vitesseDeplacement * delta);
             }
         }
 
-        // MANETTE DROITE : Rotation de la vue
+        // MANETTE DROITE : Rotation et Altitude (Élévation sur l'axe Y)
         if (source.handedness === 'right') {
+            // Rotation de la vue (joystick vers la gauche/droite)
             if (Math.abs(axeX) > deadzone) {
                 dolly.rotation.y -= axeX * vitesseRotation * delta;
+            }
+            // Altitude (joystick vers l'avant/arrière)
+            if (Math.abs(axeY) > deadzone) {
+                // Remarque : pousser le joystick en avant donne une valeur axeY négative.
+                // Soustraire cette valeur fait donc monter le Dolly.
+                dolly.position.y -= axeY * vitesseDeplacement * delta;
             }
         }
     }
