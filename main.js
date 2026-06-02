@@ -217,7 +217,7 @@ function gererDeplacementVR(delta) {
                 
                 const cameraDir = new THREE.Vector3();
                 camera.getWorldDirection(cameraDir);
-                cameraDir.y = 0; // On maintient le vecteur directeur à l'horizontale
+                // cameraDir.y = 0; // On maintient le vecteur directeur à l'horizontale
                 cameraDir.normalize();
 
                 const cameraRight = new THREE.Vector3();
