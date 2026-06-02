@@ -169,6 +169,23 @@
             50% { opacity: 1; text-shadow: 0 0 15px rgba(56, 189, 248, 0.6); }
             100% { opacity: 0.6; }
         }
+
+        /* Personnalisation du bouton VR de Three.js pour éviter les conflits visuels */
+        #XRButton {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid rgba(56, 189, 248, 0.4) !important;
+            color: #38bdf8 !important;
+            border-radius: 10px !important;
+            font-weight: bold !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4) !important;
+            transition: all 0.3s ease !important;
+        }
+        #XRButton:hover {
+            background: rgba(14, 165, 233, 0.3) !important;
+            color: #fff !important;
+        }
     </style>
 
     <script type="importmap">
