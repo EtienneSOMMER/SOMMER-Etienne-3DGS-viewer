@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { SplatMesh, SparkRenderer } from '@sparkjsdev/spark';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 // ==========================================
 // 1. CONFIGURATION DE LA SCÈNE
@@ -13,6 +14,11 @@ const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
+
+// Activation du WebXR pour la VR
+renderer.xr.enabled = true;
+document.body.appendChild(VRButton.createButton(renderer));
+
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -82,7 +88,7 @@ function chargerModele(id, modelList) {
         splatActuel.dispose(); 
     }
 
-    // MISE À JOUR DES PARAMÈTRES
+    // MISE À JUN DES PARAMÈTRES
     centreOrbite.set(config.target.x, config.target.y, config.target.z);
     camera.position.set(config.cameraPos.x, config.cameraPos.y, config.cameraPos.z);
     controls.target.copy(centreOrbite);
@@ -178,18 +184,21 @@ window.addEventListener('dblclick', (event) => {
 renderer.setAnimationLoop(() => {
     const delta = clock.getDelta();
 
-    if (isOrbiting) {
-        const vitesse = parseFloat(speedSlider.value);
-        currentAngle += delta * vitesse;
-        
-        camera.position.set(
-            centreOrbite.x + Math.cos(currentAngle) * currentOrbitRadius, 
-            centreOrbite.y + currentOrbitHeight, 
-            centreOrbite.z + Math.sin(currentAngle) * currentOrbitRadius
-        );
-        camera.lookAt(centreOrbite);
-    } else {
-        controls.update();
+    // On ne force les positions de la caméra que si on n'est pas en mode VR
+    if (!renderer.xr.isPresenting) {
+        if (isOrbiting) {
+            const vitesse = parseFloat(speedSlider.value);
+            currentAngle += delta * vitesse;
+            
+            camera.position.set(
+                centreOrbite.x + Math.cos(currentAngle) * currentOrbitRadius, 
+                centreOrbite.y + currentOrbitHeight, 
+                centreOrbite.z + Math.sin(currentAngle) * currentOrbitRadius
+            );
+            camera.lookAt(centreOrbite);
+        } else {
+            controls.update();
+        }
     }
 
     renderer.render(scene, camera);
