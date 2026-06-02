@@ -5,7 +5,7 @@ import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 // ==========================================
-// 1. CONFIGURATION DE LA SCÈNE
+// 1. CONFIGURATION DE LA SCÈNE ET VR
 // ==========================================
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
@@ -18,8 +18,19 @@ renderer.toneMappingExposure = 1.0;
 // Activation du WebXR pour la VR
 renderer.xr.enabled = true;
 document.body.appendChild(VRButton.createButton(renderer));
-
 document.body.appendChild(renderer.domElement);
+
+// Création du Dolly (véhicule pour déplacer le joueur en VR)
+const dolly = new THREE.Group();
+dolly.position.set(0, 0, 0);
+scene.add(dolly);
+dolly.add(camera);
+
+// Attacher les contrôleurs VR au Dolly
+const controller1 = renderer.xr.getController(0);
+const controller2 = renderer.xr.getController(1);
+dolly.add(controller1);
+dolly.add(controller2);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -36,6 +47,24 @@ rgbeLoader.load('./autumn_field_puresky_2k.hdr', (texture) => {
 });
 
 // ==========================================
+// GESTION PROPRE DES TRANSITIONS PC <-> VR
+// ==========================================
+renderer.xr.addEventListener('sessionstart', () => {
+    // Au moment de mettre le casque, on téléporte le Dolly 
+    // là où se trouvait la caméra sur l'écran classique
+    dolly.position.copy(camera.position);
+    // On peut forcer une hauteur d'apparition (ex: 1.6m si le modèle est à y=0)
+    // dolly.position.y = 1.6; 
+});
+
+renderer.xr.addEventListener('sessionend', () => {
+    // Au retour sur écran, on remet le Dolly à zéro 
+    // pour que les calculs de l'Orbiteur ne soient pas faussés
+    dolly.position.set(0, 0, 0);
+    dolly.rotation.set(0, 0, 0);
+});
+
+// ==========================================
 // 2. LOGIQUE DE GALERIE (JSON)
 // ==========================================
 let splatActuel = null; 
@@ -48,11 +77,9 @@ const loadingOverlay = document.getElementById('loading-overlay');
 
 async function initGallery() {
     try {
-        // 1. Lire le fichier JSON
         const response = await fetch('./models.json');
         const modelList = await response.json();
 
-        // 2. Remplir le menu déroulant
         selectMenu.innerHTML = '';
         modelList.forEach(model => {
             const option = document.createElement('option');
@@ -61,12 +88,10 @@ async function initGallery() {
             selectMenu.appendChild(option);
         });
 
-        // 3. Écouter les changements du menu
         selectMenu.addEventListener('change', (e) => {
             chargerModele(e.target.value, modelList);
         });
 
-        // 4. Charger le premier modèle par défaut
         if(modelList.length > 0) {
             chargerModele(modelList[0].id, modelList);
         }
@@ -82,13 +107,11 @@ function chargerModele(id, modelList) {
 
     loadingOverlay.classList.remove('hidden');
 
-    // NETTOYAGE : Supprimer l'ancien modèle de la mémoire
     if (splatActuel !== null) {
         scene.remove(splatActuel);
         splatActuel.dispose(); 
     }
 
-    // MISE À JUN DES PARAMÈTRES
     centreOrbite.set(config.target.x, config.target.y, config.target.z);
     camera.position.set(config.cameraPos.x, config.cameraPos.y, config.cameraPos.z);
     controls.target.copy(centreOrbite);
@@ -96,16 +119,13 @@ function chargerModele(id, modelList) {
     currentOrbitRadius = config.orbitRadius || 60;
     currentOrbitHeight = config.orbitHeight || 20;
 
-    // CHARGEMENT DU NOUVEAU SPLAT
     splatActuel = new SplatMesh({ url: config.url });
 
-    // APPLICATION DE LA ROTATION DYNAMIQUE
     if (config.rotation) {
         splatActuel.rotation.x = config.rotation.x || 0;
         splatActuel.rotation.y = config.rotation.y || 0;
         splatActuel.rotation.z = config.rotation.z || 0;
     } else {
-        // Rotation par défaut si rien n'est précisé
         splatActuel.rotation.x = -Math.PI;
     }
 
@@ -116,11 +136,10 @@ function chargerModele(id, modelList) {
     }, 2000);
 }
 
-// Lancement !
 initGallery();
 
 // ==========================================
-// 3. LOGIQUE UI (INTERFACE)
+// 3. LOGIQUE UI (INTERFACE PC)
 // ==========================================
 const btnOrbit = document.getElementById('btn-orbit');
 const btnFree = document.getElementById('btn-free');
@@ -154,9 +173,6 @@ btnFree.addEventListener('click', () => {
     speedContainer.style.pointerEvents = 'none';
 });
 
-// ==========================================
-// OUTIL : RAYCASTER (DOUBLE CLIC POUR RECENTRER)
-// ==========================================
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -173,19 +189,67 @@ window.addEventListener('dblclick', (event) => {
             centreOrbite.copy(nouveauCentre);
             controls.target.copy(nouveauCentre);
             controls.update(); 
-            console.log("Nouveau centre :", nouveauCentre);
         }
     }
 });
 
 // ==========================================
-// 4. BOUCLE D'ANIMATION
+// 4. LOGIQUE DE DÉPLACEMENT VR (JOYSTICKS)
+// ==========================================
+const vitesseDeplacement = 5.0; // Vitesse d'avancée (mètres par seconde)
+const vitesseRotation = 1.5;    // Vitesse de rotation (radians par seconde)
+const deadzone = 0.1;           // Zone morte des joysticks
+
+function gererDeplacementVR(delta) {
+    const session = renderer.xr.getSession();
+    if (!session) return;
+
+    for (const source of session.inputSources) {
+        if (!source || !source.gamepad) continue;
+
+        const axeX = source.gamepad.axes[2];
+        const axeY = source.gamepad.axes[3];
+
+        // MANETTE GAUCHE : Déplacement (Avancer, Reculer, Strafe)
+        if (source.handedness === 'left') {
+            if (Math.abs(axeX) > deadzone || Math.abs(axeY) > deadzone) {
+                
+                // Récupérer la direction du regard
+                const cameraDir = new THREE.Vector3();
+                camera.getWorldDirection(cameraDir);
+                cameraDir.y = 0; // On bloque l'axe Y pour ne pas s'envoler ou s'enterrer
+                cameraDir.normalize();
+
+                // Calculer le vecteur "Droite" pour les pas chassés
+                const cameraRight = new THREE.Vector3();
+                cameraRight.crossVectors(cameraDir, new THREE.Vector3(0, 1, 0)).normalize();
+
+                // Déplacer le Dolly
+                dolly.position.addScaledVector(cameraRight, axeX * vitesseDeplacement * delta);
+                dolly.position.addScaledVector(cameraDir, -axeY * vitesseDeplacement * delta);
+            }
+        }
+
+        // MANETTE DROITE : Rotation de la vue
+        if (source.handedness === 'right') {
+            if (Math.abs(axeX) > deadzone) {
+                dolly.rotation.y -= axeX * vitesseRotation * delta;
+            }
+        }
+    }
+}
+
+// ==========================================
+// 5. BOUCLE D'ANIMATION GLOBALE
 // ==========================================
 renderer.setAnimationLoop(() => {
     const delta = clock.getDelta();
 
-    // On ne force les positions de la caméra que si on n'est pas en mode VR
-    if (!renderer.xr.isPresenting) {
+    if (renderer.xr.isPresenting) {
+        // Mode VR : Le casque gère la caméra locale, on déplace le Dolly avec les joysticks
+        gererDeplacementVR(delta);
+    } else {
+        // Mode Écran (PC/Mobile)
         if (isOrbiting) {
             const vitesse = parseFloat(speedSlider.value);
             currentAngle += delta * vitesse;
