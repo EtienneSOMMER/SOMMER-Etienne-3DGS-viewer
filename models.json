@@ -22,7 +22,7 @@
   {
     "id": "birkenfels_restit",
     "title": "Restitution Birkenfels",
-    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Restit_Birkenfels.splat",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Step_100_Depth_R4_1M_30k.splat",
     "rotation": { "x": -1.57, "y": 0, "z": 0 },
     "cameraPos": {"x": 60, "y": 20, "z": 0},
     "target": {"x": 0, "y": 0, "z": 0},
