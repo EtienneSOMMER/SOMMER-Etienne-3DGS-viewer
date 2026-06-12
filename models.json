@@ -18,5 +18,45 @@
     "target": {"x": 0, "y": 0, "z": 0},
     "orbitRadius": 60,
     "orbitHeight": 20
+  },
+  {
+    "id": "cathedrale_lausanne",
+    "title": "Cathédrale de Lausanne",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Cathedrale_Lausanne_R1_5M_94k_full_clean.splat",
+    "rotation": { "x": -1.57, "y": 0, "z": 0 },
+    "cameraPos": {"x": 0, "y": 0, "z": 0},
+    "target": {"x": 0, "y": 42, "z": -2},
+    "orbitRadius": 40,
+    "orbitHeight": 10
+  },
+  {
+    "id": "saint-maire",
+    "title": "Château Saint-Maire",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Chateau_Saint_Maire_R2_74k_3M_clean.splat",
+    "rotation": { "x": -3.14, "y": 0, "z": 0 },
+    "cameraPos": {"x": 50, "y": 15, "z": 0},
+    "target": {"x": 17, "y": 22, "z": 2},
+    "orbitRadius": 50,
+    "orbitHeight": 15
+  },
+  {
+    "id": "ancienne-academie",
+    "title": "Ancienne académie",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Ancienne_Academie_R1_3M_80k_clean.splat",
+    "rotation": { "x": -1.57, "y": 0, "z": 0 },
+    "cameraPos": {"x": 0, "y": 0, "z": 0},
+    "target": {"x": 4, "y": 10, "z": 16},
+    "orbitRadius": 50,
+    "orbitHeight": 30
+  },
+  {
+    "id": "bas-relief",
+    "title": "Religious Bas-Relief - Bangkok",
+    "url": "https://huggingface.co/datasets/Etienne3DGS/mes-modeles-3dgs/resolve/main/Bas-Relief_5M_50k.splat",
+    "rotation": { "x": -1.57, "y": 0, "z": 0 },
+    "cameraPos": {"x": 0, "y": 20, "z": 0},
+    "target": {"x": 0, "y": 5, "z": 0},
+    "orbitRadius": 10,
+    "orbitHeight": 20
   }
 ]
